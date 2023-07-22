@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Video Conferencing Tool</title>
+  <style>
+    body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+video {
+  max-width: 50%;
+  margin: 10px;
+}
+
+.controls {
+  text-align: center;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+  </style>
+</head>
+<body>
+  <div class="video-container">
+    <video id="local-video" autoplay muted></video>
+    <video id="remote-video" autoplay></video>
+  </div>
+  <div class="controls">
+    <button id="start-call-btn">Start Call</button>
+    <button id="end-call-btn">End Call</button>
+  </div>
+
+  <script>
+    const localVideo = document.getElementById('local-video');
+const remoteVideo = document.getElementById('remote-video');
+const startCallButton = document.getElementById('start-call-btn');
+const endCallButton = document.getElementById('end-call-btn');
+let localStream, remoteStream;
+
+async function startCall() {
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    localVideo.srcObject = localStream;
+  } catch (error) {
+    console.error('Error accessing local media:', error);
+  }
+}
+
+function endCall() {
+  if (localStream) {
+    localStream.getTracks().forEach(track => track.stop());
+    localVideo.srcObject = null;
+  }
+  if (remoteStream) {
+    remoteStream.getTracks().forEach(track => track.stop());
+    remoteVideo.srcObject = null;
+  }
+}
+
+startCallButton.addEventListener('click', startCall);
+endCallButton.addEventListener('click', endCall);
+  </script>
+</body>
+</html>
